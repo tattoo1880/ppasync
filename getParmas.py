@@ -1,3 +1,4 @@
+import ssl
 import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
@@ -37,18 +38,19 @@ async def getParams(num):
             proxy = p
         else:
             return {
+                "message":"获取代理失败",
                 "status": 3,
                 "result": phoneNumber
             }
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
         # async with aiohttp.ClientSession() as session:
-            async with session.get(url,proxy=proxy) as resp:
+            async with session.get(url,proxy=proxy,ssl=False) as resp:
                 # 获取cookies
                 cookies = resp.cookies
                 # print(cookies)
             fnSessionId = ''
             formdata = {}
-            async with session.get(url2,proxy=proxy) as resp2:
+            async with session.get(url2,proxy=proxy,ssl=False) as resp2:
                 html = await resp2.text()
                 match = re.search(r"fnSessionId: '([^']+)'", html)
                 if match:
@@ -65,6 +67,7 @@ async def getParams(num):
                     print(formdata)
                 else:
                     return {
+                            "message":"获取fnSessionId失败",
                             "status": 3,
                             "result": phoneNumber
                         }
@@ -121,7 +124,7 @@ async def getParams(num):
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             }
-            async with session.post('https://www.paypal.com/signin/', data=formdata_encoded, headers=headers,proxy=proxy) as res3:
+            async with session.post('https://www.paypal.com/signin/', data=formdata_encoded, headers=headers,proxy=proxy,ssl=False) as res3:
                 print(res3.status)
                 # print(await res3.text())
                 html = await res3.text()
@@ -144,11 +147,15 @@ async def getParams(num):
                         }
                 else:
                     return {
+                            "message":"获取邮箱失败",
                             "status": 3,
                             "result": phoneNumber
                         }
-    except:
+    # except 获取错误
+    except Exception as e:
+        print(e)
         return {
+                "message":"整体获取参数",
                 "status": 3,
                 "result": phoneNumber
             }
