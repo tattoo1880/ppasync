@@ -26,13 +26,13 @@ def timeout(limit):
 
 
 
-@timeout(30)
+@timeout(120)
 async def getParams(num):
     try:
         phoneNumber = num
         url = 'https://www.paypal.com'
         url2 = 'https://www.paypal.com/signin/'
-        # p = get_proxy()
+        # p = await get_proxy()
         p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
         if p:
             proxy = p
@@ -149,7 +149,7 @@ async def getParams(num):
                         }
                 else:
                     return {
-                            "message":"获取邮箱失败",
+                            "message":"代理失效",
                             "status": 3,
                             "result": phoneNumber
                         }
@@ -177,7 +177,13 @@ async def process_all(phoneNumbers, batch_size=100):
 
 
 if __name__ == '__main__':
-    l = ['18612345678', '18612345679', '18612345670','18722036517']
+    # l = ['18612345678', '18612345679', '18612345670','18722036517']
+    l = []
+    with open('test.txt', 'r')as f:
+        for line in f.readlines():
+            l.append(line.strip().split('-')[-1])
+            
+    # print(l)
     
     results = asyncio.run(process_all(l, 100))
 
