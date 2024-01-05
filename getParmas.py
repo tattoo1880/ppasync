@@ -17,19 +17,22 @@ def timeout(limit):
                 return await asyncio.wait_for(func(*args, **kwargs), timeout=limit)
             except asyncio.TimeoutError:
                 print(f"Function {func.__name__} timed out after {limit} seconds.")
-                return None  # 或者任何适当的超时响应
+                # return None  # 或者任何适当的超时响应
+                return {"status": "timeout", "args": args, "kwargs": kwargs}
+
         return wrapper
     return decorator
 
 
 
-@timeout(20)
+@timeout(30)
 async def getParams(num):
     try:
         phoneNumber = num
         url = 'https://www.paypal.com'
         url2 = 'https://www.paypal.com/signin/'
-        p = get_proxy()
+        # p = get_proxy()
+        p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
         if p:
             proxy = p
         else:
