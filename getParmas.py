@@ -50,6 +50,7 @@ async def getParams(num):
                 # print(cookies)
             fnSessionId = ''
             formdata = {}
+            asyncio.sleep(2)
             async with session.get(url2,proxy=proxy,ssl=False) as resp2:
                 html = await resp2.text()
                 match = re.search(r"fnSessionId: '([^']+)'", html)
@@ -124,6 +125,7 @@ async def getParams(num):
                 'upgrade-insecure-requests': '1',
                 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             }
+            asyncio.sleep(2)
             async with session.post('https://www.paypal.com/signin/', data=formdata_encoded, headers=headers,proxy=proxy,ssl=False) as res3:
                 print(res3.status)
                 # print(await res3.text())
