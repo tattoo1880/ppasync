@@ -59,7 +59,7 @@ async def getParams(num,country_code):
     cc = country_code_dict.get(country_code)
     # print(cc)
     # status = 3
-    for i in range(5):
+    for i in range(10):
         try:
             phoneNumber = num
             url = 'https://www.paypal.com'
@@ -102,7 +102,7 @@ async def getParams(num,country_code):
                         iputs = form.find_all('input')
                         formdata = {input.get('name'): input.get('value')
                                     for input in iputs}
-                        print(formdata)
+                        # print(formdata)
                     else:
                         # print("获取fnSessionId失败")
                         continue
@@ -216,7 +216,7 @@ async def process_batch(phoneNumbers,country_code):
     return results  # 收集这个批次的结果
 
 @count_time
-async def process_all(phoneNumbers, country_code,batch_size=10000):
+async def process_all(phoneNumbers, country_code,batch_size):
     all_results = []  # 用于存储所有批次的结果
     for i in range(0, len(phoneNumbers), batch_size):
         batch = phoneNumbers[i:i + batch_size]
@@ -238,9 +238,10 @@ if __name__ == '__main__':
             l.append(line.strip().split('-')[-1])
     # print(country_code)
     # print(l)
+    # 
 
-    results = asyncio.run(process_all(l, country_code,100))
-
-    # 处理或打印结果
-    for result in results:
-        print(result)
+    results = asyncio.run(process_all(l, country_code,10000))
+    print("所有批次完成")
+    with open('result.txt', 'w') as f:
+        for result in results:
+            f.write(str(result) + '\n')
