@@ -58,8 +58,8 @@ async def getParams(num,country_code):
     # print(country_code)
     cc = country_code_dict.get(country_code)
     # print(cc)
-    status = 3
-    while status == 3:
+    # status = 3
+    for i in range(5):
         try:
             phoneNumber = num
             url = 'https://www.paypal.com'
@@ -94,7 +94,7 @@ async def getParams(num,country_code):
                             #     "result": phoneNumber
                             # }
                     if fnSessionId:
-                        print(fnSessionId)
+                        # print(fnSessionId)
                         soup = BeautifulSoup(html, 'html.parser')
                         # 找到有nonce属性的script标签
                         form = soup.find('form')
@@ -104,7 +104,7 @@ async def getParams(num,country_code):
                                     for input in iputs}
                         print(formdata)
                     else:
-                        print("获取fnSessionId失败")
+                        # print("获取fnSessionId失败")
                         continue
                         # return {
                         #     "message": "获取fnSessionId失败",
@@ -131,12 +131,12 @@ async def getParams(num,country_code):
                         # "ts":"1703406898049",
                         "ts": int(time.time() * 1000),
                         "eteid": [7667133238, -6001869596, 11110282995, -102422248, 5283990329, 18013206702, 17342950323, 6581359225],
-                        "tts": 1032
+                        "tts": 10,
                     },
-                    # "dc": "{\"screen\":{\"colorDepth\":24,\"pixelDepth\":24,\"height\":900,\"width\":1440,\"availHeight\":814,\"availWidth\":1440},\"ua\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\"}",
-                    # "d": {
-                    #     "rDT": "31163,31247,30748:41447,41471,40988:5626,5586,5132:10770,10698,10254:10843,10660,10270:36491,36259,35864:31382,31130,30743:51898,51613,51240:31427,31115,30754:16059,15742,15378:31432,31106,30745:16067,15731,15377:10952,10595,10254:46818,46447,46115:16090,15695,15376:31469,31049,30746:41723,41282,40994:46850,46399,46114:10995,10530,10254:31489,31019,30746:18304,23"
-                    # }
+                    "dc": "{\"screen\":{\"colorDepth\":24,\"pixelDepth\":24,\"height\":900,\"width\":1440,\"availHeight\":814,\"availWidth\":1440},\"ua\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\"}",
+                    "d": {
+                        "rDT": "31163,31247,30748:41447,41471,40988:5626,5586,5132:10770,10698,10254:10843,10660,10270:36491,36259,35864:31382,31130,30743:51898,51613,51240:31427,31115,30754:16059,15742,15378:31432,31106,30745:16067,15731,15377:10952,10595,10254:46818,46447,46115:16090,15695,15376:31469,31049,30746:41723,41282,40994:46850,46399,46114:10995,10530,10254:31489,31019,30746:18304,23"
+                    }
                 }
                 ul_fdata = urlencode(f_data)
                 formdata['fn_sync_data'] = ul_fdata
@@ -166,7 +166,8 @@ async def getParams(num,country_code):
                     'x-requested-with': 'XMLHttpRequest',
                 }
                 async with session.post('https://www.paypal.com/signin/', data=formdata_encoded, headers=headers, proxy=proxy, ssl=False,timeout=5) as res3:
-                    print(res3.status)
+                    # print(res3.status)
+                    print("正在检测手机号码是否注册", phoneNumber)
                     # print(await res3.json())
                     # print(await res3.text())
                     html = await res3.text()
@@ -203,7 +204,11 @@ async def getParams(num,country_code):
             #     "status": 3,
             #     "result": phoneNumber
             # }
-
+    return {
+        "message": "代理臭了",
+        "status": "3",
+        "result": phoneNumber
+    }
 
 async def process_batch(phoneNumbers,country_code):
     tasks = [Job(phoneNumber,country_code) for phoneNumber in phoneNumbers]
