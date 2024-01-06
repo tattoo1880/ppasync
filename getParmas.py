@@ -11,6 +11,8 @@ from functools import wraps
 import dpath
 from datacode import country_code_dict
 import multiprocessing
+from aiohttp_retry import RetryClient, ExponentialRetry
+
 
 class Work:
     def __init__(self, num,country_code):
@@ -59,7 +61,7 @@ async def getParams(num,country_code):
     # print(country_code)
     cc = country_code_dict.get(country_code)
     # print(cc)
-    status = 13
+    status = 5
     while status > 3:
         status -= 1
         try:
@@ -70,8 +72,8 @@ async def getParams(num,country_code):
             #     p = await get_proxy()
             # except:
             #     # p = None
-            # p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
-            p = 'http://dao-dc-any:EcwFZQLfW1P1o9N@gw-open.ntnt.io:5959'
+            p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
+            # p = 'http://dao-dc-any:EcwFZQLfW1P1o9N@gw-open.ntnt.io:5959'
             if p:
                 proxy = p
             else:
@@ -81,7 +83,9 @@ async def getParams(num,country_code):
                 #     "status": 3,
                 #     "result": phoneNumber
                 # }
-            async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
+            retry_options = ExponentialRetry(attempts=10)  # 配置重试选项
+            async with RetryClient(raise_for_status=False, retry_options=retry_options) as session:
+            # async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:
                 async with session.get(url2, proxy=proxy, ssl=False,timeout=5) as resp2:
                     html = await resp2.text()
                     match = re.search(r"fnSessionId: '([^']+)'", html)
@@ -260,7 +264,7 @@ def main():
         for line in f.readlines():
             l.append(line.strip().split('-')[-1])
     r_list = []
-    with multiprocessing.Pool(200) as pool:
+    with multiprocessing.Pool(500) as pool:
         for num in l:
             r = pool.apply_async(process_task, args=(num,country_code))
             r_list.append(r)
