@@ -58,8 +58,9 @@ async def getParams(num,country_code):
     # print(country_code)
     cc = country_code_dict.get(country_code)
     # print(cc)
-    # status = 3
-    for i in range(5):
+    status = 13
+    while status > 3:
+        status -= 1
         try:
             phoneNumber = num
             url = 'https://www.paypal.com'
@@ -68,8 +69,8 @@ async def getParams(num,country_code):
             #     p = await get_proxy()
             # except:
             #     # p = None
-            p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
-            # p = 'http://dao-dc-any:EcwFZQLfW1P1o9N@gw-open.ntnt.io:5959'
+            # p = 'http://brd-customer-hl_e0ead291-zone-data_center:8ihxdje2oh0k@brd.superproxy.io:22225'
+            p = 'http://dao-dc-any:EcwFZQLfW1P1o9N@gw-open.ntnt.io:5959'
             if p:
                 proxy = p
             else:
@@ -173,7 +174,6 @@ async def getParams(num,country_code):
                     html = await res3.text()
                     # with open('test.json', 'w') as f:
                     #     f.write(html)
-
                     da = json.loads(html)
                     # print(da)
                     try:
@@ -207,7 +207,7 @@ async def getParams(num,country_code):
     return {
         "message": "代理臭了",
         "status": "3",
-        "result": phoneNumber
+        "result": num
     }
 
 async def process_batch(phoneNumbers,country_code):
@@ -240,7 +240,7 @@ if __name__ == '__main__':
     # print(l)
     # 
 
-    results = asyncio.run(process_all(l, country_code,3000))
+    results = asyncio.run(process_all(l, country_code,1000))
     print("所有批次完成")
     with open('result.txt', 'w') as f:
         for result in results:
