@@ -1,3 +1,4 @@
+from ast import main
 import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
@@ -9,7 +10,7 @@ from getProxy import get_proxy
 from functools import wraps
 import dpath
 from datacode import country_code_dict
-
+from concurrent.futures import ProcessPoolExecutor
 
 class Work:
     def __init__(self, num,country_code):
@@ -224,8 +225,26 @@ async def process_all(phoneNumbers, country_code,batch_size):
         all_results.extend(batch_results)  # 合并批次结果
     return all_results
 
+# 包装一下gettParams
+def wrapper(num,country_code):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        result = loop.run_until_complete(getParams(num,country_code))
+        loop.close()
+        return result
+    except:
+        loop.close()
+        return {
+            "message": "代理臭了",
+            "status": "3",
+            "result": num
+        }
 
-if __name__ == '__main__':
+
+@count_time()
+def main():
     # l = ['18612345678', '18612345679', '18612345670','18722036517']
     l = []
     country_code = ''
@@ -240,8 +259,29 @@ if __name__ == '__main__':
     # print(l)
     # 
 
-    results = asyncio.run(process_all(l, country_code,1000))
-    print("所有批次完成")
+    # results = asyncio.run(process_all(l, country_code,100))
+    # print("所有批次完成")
+    # with open('result.txt', 'w') as f:
+    #     for result in results:
+    #         f.write(str(result) + '\n')
+    r_list = []
+    with ProcessPoolExecutor(max_workers=230) as executor:
+        futures = [executor.submit(wrapper,num,country_code) for num in l]
+        for future in futures:
+            try:
+                result = future.result()
+                # print(result)
+                if result['status'] == '已注册':
+                    r_list.append(result['result'])
+            except:
+                print('任务失败')
+                
+    print(r_list)
     with open('result.txt', 'w') as f:
-        for result in results:
-            f.write(str(result) + '\n')
+        for result in r_list:
+            f.write(str(result) + '\n'
+                    
+                    
+                    
+if __name__ == '__main__':
+    main()
