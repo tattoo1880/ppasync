@@ -6,6 +6,7 @@ async def get_proxy():
     async with httpx.AsyncClient() as client:
         resp = await client.get(url)
         if resp.status_code == 200:
+            print(resp.json())
             return 'http://' + resp.json()['data']['proxy_list'][0]
         else:
             return None
