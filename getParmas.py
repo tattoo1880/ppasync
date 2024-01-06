@@ -10,7 +10,7 @@ from getProxy import get_proxy
 from functools import wraps
 import dpath
 from datacode import country_code_dict
-from concurrent.futures import ProcessPoolExecutor
+import multiprocessing
 
 class Work:
     def __init__(self, num,country_code):
@@ -45,9 +45,9 @@ def timeout(limit):
 # 写一个计算时间的装饰器
 def count_time(func):
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         start_time = time.time()
-        res = await func(*args, **kwargs)
+        res = func(*args, **kwargs)
         end_time = time.time()
         print(f"Function {func.__name__} takes {end_time - start_time} seconds.")
         return res
@@ -216,7 +216,6 @@ async def process_batch(phoneNumbers,country_code):
     results = await asyncio.gather(*tasks)
     return results  # 收集这个批次的结果
 
-@count_time
 async def process_all(phoneNumbers, country_code,batch_size):
     all_results = []  # 用于存储所有批次的结果
     for i in range(0, len(phoneNumbers), batch_size):
@@ -243,7 +242,12 @@ def wrapper(num,country_code):
         }
 
 
-@count_time()
+def process_task(num,country_code):
+    result = wrapper(num,country_code)
+    return result
+
+
+@count_time
 def main():
     # l = ['18612345678', '18612345679', '18612345670','18722036517']
     l = []
@@ -255,31 +259,18 @@ def main():
     with open('test.txt', 'r')as f:
         for line in f.readlines():
             l.append(line.strip().split('-')[-1])
-    # print(country_code)
-    # print(l)
-    # 
-
-    # results = asyncio.run(process_all(l, country_code,100))
-    # print("所有批次完成")
-    # with open('result.txt', 'w') as f:
-    #     for result in results:
-    #         f.write(str(result) + '\n')
     r_list = []
-    with ProcessPoolExecutor(max_workers=230) as executor:
-        futures = [executor.submit(wrapper,num,country_code) for num in l]
-        for future in futures:
-            try:
-                result = future.result()
-                # print(result)
-                if result['status'] == '已注册':
-                    r_list.append(result['result'])
-            except:
-                print('任务失败')
-                
-    print(r_list)
-    with open('result.txt', 'w') as f:
-        for result in r_list:
-            f.write(str(result) + '\n'
+    with multiprocessing.Pool(200) as pool:
+        for num in l:
+            r = pool.apply_async(process_task, args=(num,country_code))
+            r_list.append(r)
+        pool.close()
+        pool.join()
+        
+    results = [r.get() for r in r_list]
+    print(results)
+    with open('result.json', 'w')as f:
+        f.write(str(results))
                     
                     
                     
