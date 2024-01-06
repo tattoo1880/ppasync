@@ -11,6 +11,19 @@ import dpath
 from datacode import country_code_dict
 
 
+class Work:
+    def __init__(self, num,country_code):
+        self.num = num
+        self.country_code = country_code
+    async def worker(self):
+        return await getParams(self.num,self.country_code)
+
+async def Job(num,country_code):
+    work = Work(num,country_code)
+    return await work.worker()
+
+
+
 def timeout(limit):
     def decorator(func):
         @wraps(func)
@@ -193,7 +206,7 @@ async def getParams(num,country_code):
 
 
 async def process_batch(phoneNumbers,country_code):
-    tasks = [getParams(phoneNumber,country_code) for phoneNumber in phoneNumbers]
+    tasks = [Job(phoneNumber,country_code) for phoneNumber in phoneNumbers]
     results = await asyncio.gather(*tasks)
     return results  # 收集这个批次的结果
 
