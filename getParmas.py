@@ -1,6 +1,3 @@
-from math import pi
-import ssl
-import stat
 import aiohttp
 import asyncio
 from bs4 import BeautifulSoup
@@ -43,11 +40,11 @@ def count_time(func):
     return wrapper
 
 async def getParams(num,country_code):
-    print(country_code)
+    # print(country_code)
     country_code = "+" + f'{country_code}'
-    print(country_code)
+    # print(country_code)
     cc = country_code_dict.get(country_code)
-    print(cc)
+    # print(cc)
     status = 3
     while status == 3:
         try:
@@ -201,7 +198,7 @@ async def process_batch(phoneNumbers,country_code):
     return results  # 收集这个批次的结果
 
 @count_time
-async def process_all(phoneNumbers, country_code,batch_size=5000):
+async def process_all(phoneNumbers, country_code,batch_size=10000):
     all_results = []  # 用于存储所有批次的结果
     for i in range(0, len(phoneNumbers), batch_size):
         batch = phoneNumbers[i:i + batch_size]
@@ -221,7 +218,7 @@ if __name__ == '__main__':
     with open('test.txt', 'r')as f:
         for line in f.readlines():
             l.append(line.strip().split('-')[-1])
-    print(country_code)
+    # print(country_code)
     # print(l)
 
     results = asyncio.run(process_all(l, country_code,100))
