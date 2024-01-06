@@ -61,10 +61,7 @@ async def getParams(num,country_code):
     # print(country_code)
     cc = country_code_dict.get(country_code)
     # print(cc)
-    status = 5
-    while status > 3:
-        status -= 1
-        try:
+    try:
             phoneNumber = num
             url = 'https://www.paypal.com'
             url2 = 'https://www.paypal.com/signin/'
@@ -202,18 +199,12 @@ async def getParams(num,country_code):
                             }
                     except:
                         pass
-        except:
-            continue
-            # return {
-            #     "message": "代理臭了",
-            #     "status": 3,
-            #     "result": phoneNumber
-            # }
-    return {
-        "message": "代理臭了",
-        "status": "3",
-        "result": num
-    }
+    except:
+        return {
+            "message": "代理臭了",
+            "status": "3",
+            "result": num
+        }
 
 async def process_batch(phoneNumbers,country_code):
     tasks = [Job(phoneNumber,country_code) for phoneNumber in phoneNumbers]
