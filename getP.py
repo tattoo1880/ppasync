@@ -185,9 +185,9 @@ if __name__ == '__main__':
             
     print(p_list)
     print(country)
-    subsets = list(split_into_chunks(p_list, 200))
+    subsets = list(split_into_chunks(p_list, 100))
     re_he = []
-    with ProcessPoolExecutor(max_workers=50) as executor:
+    with ProcessPoolExecutor(max_workers=20) as executor:
         results = executor.map(start_asyncio_loop, subsets, [country]*len(subsets))
         for result in results:
             # print(result)
