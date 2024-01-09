@@ -8,6 +8,7 @@ import time
 import dpath
 # 倒入进程池
 from concurrent.futures import ProcessPoolExecutor
+import aiofiles
 
 
 async def getP(num, country_code):
@@ -193,5 +194,12 @@ if __name__ == '__main__':
             # 拼接所有
             re_he.extend(result)
     print(re_he)
+    # 遍历re_he找到已注册的
+    for i in re_he:
+        if i['msg'] == '已注册':
+            # 使用aiofiles写入
+            async def write_file():
+                async with aiofiles.open('result.txt', 'a') as f:
+                    await f.write(i['num'] + '\n')
     end = time.time()
     print('Cost time:', end - start)
