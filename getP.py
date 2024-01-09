@@ -184,12 +184,14 @@ if __name__ == '__main__':
             
     print(p_list)
     print(country)
-    subsets = list(split_into_chunks(p_list, 300))
-    
-    with ProcessPoolExecutor(max_workers=200) as executor:
+    subsets = list(split_into_chunks(p_list, 200))
+    re_he = []
+    with ProcessPoolExecutor(max_workers=50) as executor:
         results = executor.map(start_asyncio_loop, subsets, [country]*len(subsets))
         for result in results:
-            print(result)
-    
+            # print(result)
+            # 拼接所有
+            re_he.extend(result)
+    print(re_he)
     end = time.time()
     print('Cost time:', end - start)
