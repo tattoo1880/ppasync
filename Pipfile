@@ -8,6 +8,9 @@ httpx = "*"
 dpath = "*"
 beautifulsoup4 = "*"
 aiofiles = "*"
+fastapi = "*"
+uvicorn = "*"
+motor = "*"
 
 [dev-packages]
 
