@@ -5,10 +5,12 @@ import json
 # 批量创建数据
 # 批量创建数据
 async def create_items(items: list):
+    ttl = 30
     client = await create_redis_pool()
     for i in items:
         k = json.dumps(i)
         await client.set(i['num'], k)
+        await client.expire(i['num'], ttl)
     return await find_all_items()
         
 
