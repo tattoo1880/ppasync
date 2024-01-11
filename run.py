@@ -11,9 +11,11 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import aiofiles
 from database.crud import find_all_status, update_items
 from models.model import Item
-
+from dotenv import load_dotenv
+import os
 
 async def getP(num, country_code):
+    print("执行",num)
     cc = country_code_dict.get("+" + country_code)
     # print(cc)
     # print(country_code)
@@ -189,6 +191,11 @@ async def start():
 
 
 async def star():
+    load_dotenv()
+    list_size = os.getenv('LIST_SIZE')
+    max_worker = os.getenv('MAX_WORKER')
+    print(list_size)
+    print(max_worker)   
     start = time.time()
     p_list = []
     country = ''
@@ -200,9 +207,9 @@ async def star():
         p_list.append(num)
     print(p_list)
     print(country)
-    subsets = list(split_into_chunks(p_list, 200))
+    subsets = list(split_into_chunks(p_list, int(list_size)))
     re_he = []
-    with ProcessPoolExecutor(max_workers=2) as executor:
+    with ProcessPoolExecutor(max_workers=int(max_worker)) as executor:
         futures = [executor.submit(
             start_asyncio_loop, subset, country) for subset in subsets]
         for future in as_completed(futures):
@@ -274,7 +281,10 @@ async def star():
         list1.append(data5)
         print("============================",e)
     # print(re_he)
-    await update_items(list1)
+    try:
+        await update_items(list1)
+    except:
+        print("更新失败")
     end = time.time()
     print('Cost time:', end - start)
     return {

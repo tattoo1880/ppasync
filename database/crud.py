@@ -61,12 +61,10 @@ async def find_all_status():
 
 # update_items
 async def update_items(items: list):
-    ttl = 3600
     client = await create_redis_pool()
     for i in items:
         k = json.dumps(i)
         await client.set(i['num'], k)
-        await client.impire(i['num'], ttl)
     return await find_all_items()
 
 

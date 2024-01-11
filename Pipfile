@@ -13,6 +13,7 @@ uvicorn = "*"
 motor = "*"
 asyncio-redis = "*"
 redis = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
