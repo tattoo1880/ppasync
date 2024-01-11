@@ -179,7 +179,7 @@ async def write_file(filename, data):
     async with aiofiles.open(filename, 'a') as file:
         await file.write(data + '\n')
 
-async def start():
+async def star():
     status = 0
     while status == 0:
         await star()
@@ -190,7 +190,7 @@ async def start():
     
 
 
-async def star():
+async def start():
     load_dotenv()
     list_size = os.getenv('LIST_SIZE')
     max_worker = os.getenv('MAX_WORKER')
