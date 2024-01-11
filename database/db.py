@@ -1,9 +1,6 @@
-import ssl
-import motor.motor_asyncio
+import redis.asyncio as redis
+async def create_redis_pool():
+    pool = redis.ConnectionPool.from_url("redis://localhost", db=0)
+    client = redis.Redis(connection_pool=pool)
+    return client
 
-
-# uri = 'mongodb+srv://tattoo186225345941:Qwerty7788421@cluster0.cf73hmy.mongodb.net/?retryWrites=true&w=majority'
-uri = "mongodb://localhost:27017"
-client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-db = client['asnum']
-collection = db['asnum']

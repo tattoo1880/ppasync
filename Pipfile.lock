@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1eebaa3e8bdeeac143f9e91824b4bd3a38b7a56fb29225239d8d49b94b9edf34"
+            "sha256": "26feca8ce58dcb32d205f6a134082a5f9779aea9e8dd7630326a98b866ac98e3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,6 +41,15 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==4.2.0"
+        },
+        "asyncio-redis": {
+            "hashes": [
+                "sha256:4a134fde5ea3628ff0c7118e2424b0f26140a1bd21d5e4632058f1f662773686",
+                "sha256:ff8ce4e7e22a08e2688ae6b397aeac355473e343ce3c68ae3b713494318d848b"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==0.16.0"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -341,6 +350,15 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==4.6.1"
+        },
+        "redis": {
+            "hashes": [
+                "sha256:0dab495cd5753069d3bc650a0dde8a8f9edde16fc5691b689a566eda58100d0f",
+                "sha256:ed4802971884ae19d640775ba3b03aa2e7bd5e8fb8dfaed2decce4d0fc48391f"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.7'",
+            "version": "==5.0.1"
         },
         "sniffio": {
             "hashes": [

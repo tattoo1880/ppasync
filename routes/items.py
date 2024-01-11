@@ -51,13 +51,14 @@ async def upload(request:Request):
         # 创建Item对象
         item = Item(num=num, country=country)
         # 将Item对象插入到数据库中
-        new_list.append(item)
+        new_list.append(item.dict())
     # 批量插入数据
+    print(new_list)
     res = await create_items(new_list)
     return {
         "code": 200,
         "msg": "上传成功",
-        "data": res
+        "data": 'res'
     }
 
 
@@ -106,7 +107,6 @@ async def delete():
 async def find_res():
     l = await find_all_items_msg()
     # 将每个元素的 _id 从 ObjectId 转换为字符串
-    l = [item | {"_id": str(item["_id"])} for item in l]
     print(l)  
     return {
         "message": "OK", 

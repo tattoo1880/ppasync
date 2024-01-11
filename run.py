@@ -9,8 +9,7 @@ import dpath
 # 倒入进程池
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import aiofiles
-from database.db import collection
-from database.crud import find_all_status, update_item, update_items
+from database.crud import find_all_status, update_items
 from models.model import Item
 
 
@@ -178,13 +177,23 @@ async def write_file(filename, data):
     async with aiofiles.open(filename, 'a') as file:
         await file.write(data + '\n')
 
-
 async def start():
+    status = 0
+    while status == 0:
+        await star()
+        l = await find_all_status()
+        if len(l) == 0:
+            status = 1
+            print("任务完成")
+    
+
+
+async def star():
     start = time.time()
     p_list = []
     country = ''
     cursor = await find_all_status()
-    items = [item async for item in cursor]
+    items = [item for item in cursor]
     for item in items:
         num = item.get('num')
         country = item.get('country')
@@ -243,13 +252,29 @@ async def start():
                     }
                     list1.append(data3)
             except Exception as e:
+                data4 = {
+                    "num": num,
+                    "country": country,
+                    "status": "3",
+                    "code": '500',
+                    "msg": e
+                }
+                list1.append(data4)
                 print("+++++++",e)
                 continue
-        await update_items(list1)
             # print(list3)
     except Exception as e:
+        data5 = {
+            "num": num,
+            "country": country,
+            "status": "3",
+            "code": '500',
+            "msg": e
+        }
+        list1.append(data5)
         print("============================",e)
     # print(re_he)
+    await update_items(list1)
     end = time.time()
     print('Cost time:', end - start)
     return {

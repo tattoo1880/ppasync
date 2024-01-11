@@ -11,6 +11,8 @@ aiofiles = "*"
 fastapi = "*"
 uvicorn = "*"
 motor = "*"
+asyncio-redis = "*"
+redis = "*"
 
 [dev-packages]
 
